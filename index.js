@@ -34,28 +34,20 @@ async function run() {
 
     app.put('/user/admin/:email', async (req, res) => {
       const email = req.params.email;
-      // const requester = await userCollection.findOne({ email: request })
-      // if (requester.role === 'admin') {
-      //   const filter = { email: email };
-      //   const updateDoc = {
-      //     $set: { role: ' admin' },
-      //   };
-      //   const result = await userCollection.updateOne(filter, updateDoc);
-
-      //   res.send(result);
-      // }
-      // else {
-      //   res.send({ message: 'forbidden' })
-      // }
       const filter = { email: email };
       const updateDoc = {
         $set: { role: ' admin' },
       };
       const result = await userCollection.updateOne(filter, updateDoc);
-
       res.send(result);
-
     });
+
+    app.get('/admin/:email', async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      const isAdmin = user.role ? true : false;
+      res.send({ admin: isAdmin })
+    })
 
     app.get('/products', async (req, res) => {
       const query = {}
@@ -63,20 +55,16 @@ async function run() {
       const products = await cursor.toArray();
       res.send(products)
     });
-
     app.get('/user', async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
     });
-
     app.get('/order/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const orderProduct = await productCollection.findOne(query);
       res.send(orderProduct)
     });
-
-
     app.post('/purchase', async (req, res) => {
       const purchase = req.body;
       const result = await purchaseCollection.insertOne(purchase);
@@ -93,7 +81,6 @@ async function run() {
 
   }
   finally {
-
   }
 }
 run().catch(console.dir)
