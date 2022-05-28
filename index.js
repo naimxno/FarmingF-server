@@ -78,6 +78,12 @@ async function run() {
       const purchases = await cursor.toArray();
       res.send(purchases)
     });
+    app.get('/purchases', async (req, res) => {
+      const query = {}
+      const cursor = purchaseCollection.find(query);
+      const purchases = await cursor.toArray();
+      res.send(purchases)
+    });
 
   }
   finally {
